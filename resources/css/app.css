@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.select2{
+    width: 100% !important;
+}
+
+
+select{
+    background-position: left 0.5rem center !important;
+}
+
