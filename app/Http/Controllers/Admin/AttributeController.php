@@ -65,9 +65,13 @@ class AttributeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Attribute  $attribute)
     {
-        //
+        $values = AttributeValue::select('id','value')->where('attribute_id',$attribute->id)->get()->keyBy('id')->toArray();
+        return  [
+            'values' => $values,
+            'attribute' =>$attribute
+        ];
     }
 
     /**
@@ -101,35 +105,40 @@ class AttributeController extends Controller
 
         $attribute->update([$request['name']]);
 
+        try {
+            $attrributeValues = AttributeValue::select('id')->where('attribute_id' , $attribute->id)->get()->toArray();
 
-        $attrributeValues = AttributeValue::select('id')->where('attribute_id' , $attribute->id)->get()->toArray();
+            $deletedValues = array_diff(array_column($attrributeValues,'id'),array_keys($request['values']));
 
-        $deletedValues = array_diff(array_column($attrributeValues,'id'),array_keys($request['values']));
-        foreach ($deletedValues as $key => $value){
-            AttributeValue::where('id',$value)->delete();
-        }
-
-        foreach ($request['values'] as $key => $value){
-            if (!is_null($value['value'])){
-                if ($atr = AttributeValue::where('id',$key)->first() ){
-                    if ( $exist = AttributeValue::where('attribute_id' , $attribute->id)->where('value' , $value['value'])->where('id', '<>', $key)->get()->toArray()){
-                        throw ValidationException::withMessages(['values' => 'داده تکراری']);
-                    }
-                    else
-                        $atr->update(['value' => $value['value']]);
-                }
-                else{
-                    if ($atr = AttributeValue::where('attribute_id' , $attribute->id)->where('value' , $value['value'])->first())
-                        throw ValidationException::withMessages(['values' => 'داده تکراری']);
-                    else
-                        AttributeValue::create(['attribute_id' => $attribute->id, 'value' => $value['value']]);
-                    dd($value);
-                }
-
-
+            foreach ($deletedValues as $key => $value){
+                AttributeValue::where('id',$value)->delete();
             }
 
+            foreach ($request['values'] as $key => $value){
+                if (!is_null($value['value'])){
+                    dd($value , $key);
+                }
+            }
+
+        } catch (Exception $e) {
+            echo 'Caught exception: ',  $e->getMessage(), "\n";
         }
+
+        /*
+         if ($atr = AttributeValue::where('id',$key)->first() ){
+            if ( $exist = AttributeValue::where('attribute_id' , $attribute->id)->where('value' , $value['value'])->where('id', '<>', $key)->get()->toArray()){
+                throw ValidationException::withMessages(['values' => 'داده تکراری']);
+            }
+            else
+                $atr->update(['value' => $value['value']]);
+            }
+            else{
+                if ($atr = AttributeValue::where('attribute_id' , $attribute->id)->where('value' , $value['value'])->first())
+                    throw ValidationException::withMessages(['values' => 'داده تکراری']);
+                else
+                    AttributeValue::create(['attribute_id' => $attribute->id, 'value' => $value['value']]);
+            }
+        */
         return redirect()->back();
     }
 

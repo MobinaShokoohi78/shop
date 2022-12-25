@@ -4,12 +4,12 @@
         <div class="border-b border-gray-200 rounded">
             <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="myTab" data-tabs-toggle="#myTabContent" role="tablist">
                 <li class="mr-2" role="presentation" v-show="columns.length >= 1">
-                    <button class="nline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300" id="columns-tab" data-tabs-target="#columns" type="button" role="tab" aria-controls="columns" aria-selected="false">ستون ها</button>
+                    <button class="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300" id="columns-tab" data-tabs-target="#columns" type="button" role="tab" aria-controls="columns" aria-selected="false">ستون ها</button>
                 </li>
-                <li class="mr-2" role="presentation" v-show="columns.length >= 1">
+                <li class="mr-2" role="presentation" v-show="fieldsSearch.length >= 1">
                     <button class="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300" id="search-tab" data-tabs-target="#search" type="button" role="tab" aria-controls="search" aria-selected="false">جست و جو</button>
                 </li>
-                <li class="mr-2" role="presentation" v-show="filters.length >= 1">
+                <li class="mr-2" role="presentation" v-show="Object.keys(filters).length  >= 1">
                     <button class="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300" id="filter-tab" data-tabs-target="#filter" type="button" role="tab" aria-controls="filter" aria-selected="false">فیلتر ها</button>
                 </li>
                 <li class="mr-2" role="presentation">
@@ -20,14 +20,16 @@
         <div id="myTabContent">
             <div class="hidden p-4 bg-gray-50 rounded-lg" id="columns" role="tabpanel" aria-labelledby="columns-tab" v-show="columns.length >= 1">
                 <div class="w-full">
-                    <select2
+                    <pro-select
+                        select-id="select"
+                        :items="columns"
+                        placeholder="ستون ها"
                         v-model="columnsSelected"
-                        :options="columns"
-                        :settings="{ multiple : true }"
-                    ></select2>
+                        :multiSelect="multiSelect"
+                    ></pro-select>
                 </div>
             </div>
-            <div class="hidden p-4 bg-gray-50 rounded-lg" id="search" role="tabpanel" aria-labelledby="search-tab" v-show="columns.length >= 1">
+            <div class="hidden p-4 bg-gray-50 rounded-lg" id="search" role="tabpanel" aria-labelledby="search-tab" v-show="fieldsSearch.length >= 1">
                 <div class="flex flex-row">
                     <div class="relative w-full ml-2">
                         <div>
@@ -38,16 +40,16 @@
                         </div>
                     </div>
                     <div class="w-full" v-if="columns.length >1">
-                        <select2
+                        <pro-select
+                            placeholder="ستون ها"
+                            :items="columns"
                             v-model="fieldsSearch"
-                            :options="columns"
-                            :settings="{ multiple : true }"
-                        ></select2>
+                            :multiSelect="multiSelect"
+                        ></pro-select>
                     </div>
                 </div>
-
             </div>
-            <div class="hidden p-4 bg-gray-50 rounded-lg" id="filter" role="tabpanel" aria-labelledby="filter-tab" v-show="filters.length >= 1" >
+            <div class="hidden p-4 bg-gray-50 rounded-lg" id="filter" role="tabpanel" aria-labelledby="filter-tab" v-show="Object.keys(filters).length  >= 1" >
                 <div class="relative w-full ml-2 flex items-center mb-4" v-for="(filter, i) in filters">
                     <div class="w-2/12 m-2">
                         <div>{{filter.name}}</div>
@@ -65,14 +67,13 @@
                             color="gray"
                             mode="single"
                             clearable
-                            @select="selectDate"
-                        ></DatePicker>
+                            @select="selectDate">
+                        </DatePicker>
                         <select
                             @change="getData"
                             v-else
                             v-model="selectedFilters[filter.name]"
-                            class="ml-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 text-right"
-                        >
+                            class="ml-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 text-right">
                             <option v-for="item in filter.value" :value="item.id" v-text="item.text"></option>
                         </select>
                     </div>
@@ -110,13 +111,11 @@
 
                     </div>
                 </div>-->
-
             </div>
         </div>
     </div>
 
     <!--    end tab     -->
-
 
     <!--    table      -->
     <div class="m-4 relative overflow-x-auto shadow-md sm:rounded-lg mt-6">
@@ -180,25 +179,8 @@
                     </td>
                     <td class="px-6 py-4 text-right">
                         <div class="flex">
-
                             <slot name="action" :id="row[key]" :item="row" :prem="permission"/>
 <!--                            :href="route(permission.update ,row[key])"-->
-
-                            <a v-if="permission.update"
-                               :href="makeUpdateUrl(row[key])"
-                               title="ویرایش"
-                               :id="row[key]"
-                               class="mx-4 font-medium transition hover:scale-125 ease-in-out duration-150 w-5 h-5">
-                                    <i class="fa-solid fa-pen-to-square fa-lg text-green-500"></i>
-                            </a>
-
-                            <a v-if="permission.delete"
-                               @click="remove(row[key])"
-                               title="حذف"
-                               :id="row[key]"
-                               class=" mx-4 w-5 h-5 font-medium transition hover:scale-125 ease-in-out duration-150">
-                                    <i class="fa-solid fa-trash-can fa-lg text-red-500"></i>
-                            </a>
                         </div>
                     </td>
                 </tr>
@@ -208,7 +190,6 @@
     <!--    end table      -->
 
     <!--    pagination      -->
-
     <div class="text-center m-5 text-gray-400">
         نمایش از
         <span class="font-bold text-blue-400"> {{ from }}</span>
@@ -219,7 +200,6 @@
     </div>
 
     <Pagination :pages="pages" v-model="currentPage" v-if="pages" ref="pagination"/>
-
     <!--    end pagination      -->
 
 
@@ -231,11 +211,13 @@ import Pagination from "@/Layouts/Admin/Pagination";
 import { Inertia } from '@inertiajs/inertia';
 import SweetAlert from 'sweetalert2/dist/sweetalert2.js';
 import DatePicker from '@alireza-ab/vue3-persian-datepicker';
+import ProSelect from "@/Layouts/Admin/ProSelect";
 
 
 export default {
     name: "DataTable",
     components: {
+        ProSelect,
         Pagination,
         DatePicker,
     },
@@ -249,7 +231,7 @@ export default {
     data(){
         return{
             columns : [],
-            columnsSelected : '',
+            columnsSelected : [],
 
             search:'',
             fieldsSearch:[],
@@ -271,8 +253,15 @@ export default {
             pages: null,
             permission: null,
 
-            data: {},
+            multiSelect: true,
 
+            data: {},
+            selectedList: [
+                'email',
+                'name',
+                'is_admin',
+                'created_at'
+            ]
         }
     },
     computed:{},
@@ -286,7 +275,6 @@ export default {
                 sort : this.sort,
                 filters : this.selectedFilters,
             }).then((response) => {
-
                 this.data = response.data['data'].data;
                 this.from = response.data['data'].from;
                 this.to = response.data['data'].to;
@@ -298,13 +286,16 @@ export default {
 
                 if (! this.columns.length > 0){
                     this.columns = response.data['fields'];
-                    // this.columnsSelected = response.data['fields'];
                     this.columnsSelected = response.data['fields'].map((item)=> item['id'])
-                    this.fieldsSearch = response.data['fields'].map((item)=> item['id'])
                 }
 
                 if (response.data['filters']){
                     this.filters = response.data['filters'];
+                }
+
+                if (response.data['search']){
+                    console.log( response.data['search'])
+                    this.fieldsSearch = response.data['search']
                 }
 
                 if (response.data['key']){
@@ -337,72 +328,6 @@ export default {
                 }
             });
             return v;
-        },
-        remove(id){
-
-            SweetAlert.fire({
-                title: 'آیا مایل به حذف این گزینه هستید؟',
-                icon: 'question',
-                showDenyButton: true,
-                showCancelButton: false,
-                confirmButtonText: 'بله',
-                denyButtonText: `خیر`,
-                confirmButtonColor:'#22c55e',
-                denyButtonColor:'#ef4444',
-            }).then((result) => {
-
-                if (result.isConfirmed) {
-                    Inertia.delete(this.currentUrl + '/' + id,{
-                        onBefore: (visit) => {},
-                        onStart: (visit) => {},
-                        onProgress: (progress) => {},
-                        onSuccess: (page) => {
-                            const Toast = SweetAlert.mixin({
-                                toast: true,
-                                position: 'top-start',
-                                showConfirmButton: false,
-                                timer: 4000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', SweetAlert.stopTimer)
-                                    toast.addEventListener('mouseleave', SweetAlert.resumeTimer)
-                                }
-                            });
-
-                            Toast.fire({
-                                icon: 'success',
-                                title: 'اطلاعات با موفقیت حذف شد!'
-                            });
-                        },
-                        onError: (errors) => {
-                            console.log(errors);
-
-                            const Toast = SweetAlert.mixin({
-                                toast: true,
-                                position: 'top-start',
-                                showConfirmButton: false,
-                                timer: 4000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', SweetAlert.stopTimer)
-                                    toast.addEventListener('mouseleave', SweetAlert.resumeTimer)
-                                }
-                            });
-
-                            Toast.fire({
-                                icon: 'error',
-                                title: 'حذف اطلاعات با مشکل مواجه شد!'
-                            });
-                        },
-                        onCancel: () => {},
-                        onFinish: visit => {
-                            this.getData();
-                        },
-                    });
-                } else if (result.isDenied) {
-
-                }
-            })
         },
         makeUpdateUrl(id){
             return this.currentUrl+ '/'+ id + '/edit'
@@ -478,9 +403,9 @@ export default {
             console.log('select');
             this.getData();
         },
-        fieldsSearch(){
-            this.getData();
-        }
+        // fieldsSearch(){
+        //     this.getData();
+        // }
     },
     mounted() {
         this.getData();

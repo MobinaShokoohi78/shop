@@ -1,28 +1,22 @@
 /** @type {import('tailwindcss').Config} */
-const defaultTheme = require('tailwindcss/defaultTheme');
-
 module.exports = {
     content: [
-        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
-        './storage/framework/views/*.php',
-        './resources/views/**/*.blade.php',
-        './resources/js/**/*.vue',
         "./index.html",
-
+        "./src/**/*.{vue,js,ts,jsx,tsx}",
+        "./resources/**/*.blade.php",
+        "./resources/**/*.js",
+        "./resources/**/*.vue",
+        "./node_modules/flowbite/**/*.js"
     ],
-
     theme: {
-        extend: {
+        theme: {
             fontFamily: {
-                sans: ['Nunito', ...defaultTheme.fontFamily.sans],
-            },
-        },
+                'display': ['Oswald'],
+                'body': ['"Open Sans"'],
+            }
+        }
     },
-
     plugins: [
-        require('@tailwindcss/forms'),
-        require('tailwindcss-rtl'),
-        require('flowbite/plugin'),
-
+        require('flowbite/plugin')
     ],
-};
+}

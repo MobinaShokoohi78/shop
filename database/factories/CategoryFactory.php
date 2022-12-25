@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Attribute;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CategoryFactory extends Factory
@@ -15,8 +16,8 @@ class CategoryFactory extends Factory
     public function definition()
     {
         return [
-            'name'=> $this->faker->word(),
-            'parent'=> Attribute::all()->random()->id
+            'name'=> $this->faker->unique()->word(),
+            'parent'=> Category::all()->random()->id
         ];
     }
 }

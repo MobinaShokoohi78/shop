@@ -19,7 +19,7 @@ class CreateProductsTable extends Migration
             $table->string('title');
 
             $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categorys')->onDelete('cascade');
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
 
             $table->text('description');
 
@@ -32,8 +32,13 @@ class CreateProductsTable extends Migration
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
 
+            $table->unsignedBigInteger('color_id');
+            $table->foreign('color_id')->references('id')->on('colors')->onDelete('cascade');
+
+            $table->unsignedBigInteger('size_id');
+            $table->foreign('size_id')->references('id')->on('sizes')->onDelete('cascade');
+
             $table->integer('count');
-            $table->integer('size');
             $table->integer('price');
 
             $table->timestamps();

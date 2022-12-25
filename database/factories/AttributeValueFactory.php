@@ -16,7 +16,7 @@ class AttributeValueFactory extends Factory
     {
         return [
             'attribute_id'=> Attribute::all()->random()->id,
-            'value'=> $this->faker->word()
+            'value'=> $this->faker->unique()->word()
         ];
     }
 }

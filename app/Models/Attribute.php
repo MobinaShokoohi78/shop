@@ -11,7 +11,7 @@ class Attribute extends Model
 
     protected $fillable = ['name'];
 
-    public function products()
+    public function Products()
     {
         return $this->belongsToMany(product::class);
     }
@@ -19,5 +19,10 @@ class Attribute extends Model
     public function AttributeValues()
     {
         return $this->hasMany(AttributeValue::class);
+    }
+
+    public function AttributeProducts()
+    {
+        return $this->hasMany(AttributeProduct::class);
     }
 }

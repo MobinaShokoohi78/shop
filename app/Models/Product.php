@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class product extends Model
+class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description'];
+    protected $fillable = ['title', 'description','category_id'];
 
     public function comments()
     {
@@ -39,5 +39,10 @@ class product extends Model
     public function categories()
     {
         return $this->hasOne(Category::class);
+    }
+
+    public function attributeProduct()
+    {
+        return $this->hasMany(AttributeProduct::class);
     }
 }

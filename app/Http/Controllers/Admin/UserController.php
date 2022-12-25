@@ -32,7 +32,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Admin/Users/create');
+        //
     }
 
     /**
@@ -56,7 +56,7 @@ class UserController extends Controller
 
         $user->markEmailAsVerified();
 
-        return redirect()->route('admin.users.edit',$user->id);
+        return redirect()->back();
 
     }
 
@@ -66,9 +66,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User  $user)
     {
-        //
+        return $user;
     }
 
     /**
@@ -79,9 +79,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return Inertia::render('Admin/Users/edit',[
-            'user' => $user
-        ]);
+        //
     }
 
     /**
@@ -103,9 +101,9 @@ class UserController extends Controller
                 'password' => ['required', 'string', 'min:6', 'confirmed'],
             ]);
 
-            $data['password'] = $request->password;
+            $data['password'] = Hash::make($request->password) ;
         }
-
+        $data['is_admin'] = $request->is_admin;
         $user->update($data);
         return redirect()->back();
 
@@ -126,11 +124,12 @@ class UserController extends Controller
 
     public function getData(Request $request)
     {
-
         $fields = [['name','نام'],['email','ایمیل'],['is_admin','کاربر ادمین'],['created_at','تاریخ ساخت']];
 
         $data = $this->dataTable('users', $fields, $request);
+
         $fields = [['id'=>'name','text'=>'نام'],['id'=>'email','text'=>'ایمیل'],['id'=>'is_admin','text'=>'کاربر ادمین'],['id'=>'created_at','text'=>'تاریخ ساخت']];
+        $search = ['name','email','is_admin','created_at'];
         $filters = [[
             'name'=>'is_admin',
             'type'=>'select',
@@ -143,72 +142,10 @@ class UserController extends Controller
         return [
             'data' => $data,
             'fields' => $fields,
-            'filters' => (object)$filters,
-            'permission' =>(object)['update'=>true,'delete'=>true],
+            'filters' => $filters,
+            'search' => $search,
+            'permission' =>['update'=>'admin.users.update','delete'=>'admin.users.destroy'],
             ];
-//        'permission' =>(object)['update'=>'admin.users.update','delete'=>'admin.users.destroy'],
-
     }
-
-//    public function dataTable($model,$fields,$request,$key= ['id'])
-//    {
-//        $data = DB::table($model);
-//
-//        if (!is_null($fields)){
-//            array_unshift($fields,$key);
-//            $cols = collect($fields);
-//            $cols = $cols->map(function ($item){
-//                return $item[0];
-//            });
-//
-//            $data = $data->select($cols->all());
-//        }
-//
-//
-//        if (!empty($request->filters)){
-//            $filters = $request->filters;
-//            foreach($filters as $filter => $key){
-//
-//                if ($key != ''){
-//                    if (DateTime::createFromFormat('Y-m-d', $key) !== false || DateTime::createFromFormat('Y-m-d H:i:s', $key) !== false){
-//                        $data = $data->where($filter, 'like',"%$key%");
-//
-//                    }
-//                    else{
-//                        $data = $data->where($filter, $key);
-//
-//                    }
-//                }
-//            }
-//        }
-//
-//        if (isset($request->search) && isset($request->fieldsSearch)){
-//
-//            $search = $request->search;
-//            $searchValue = $request->fieldsSearch;
-//            $where= [];
-//            foreach ($searchValue as $key =>$value){
-//                if ($key == 0)
-//                    continue;
-//                array_push($where, [$value , 'like', "%$search%"]);
-//            }
-//            $data = $data->where($searchValue[0],'like', "%$search%")->orWhere($where);
-//
-//        }
-//
-//
-//        if (!empty($request->sort))
-//            $data = $data->orderBy($request->sort['name'], $request->sort['type']);
-//        else
-//            $data = $data->latest();
-//
-//
-//        if (! is_null($request->page))
-//            $data =$data->paginate($request->paginate,['*'],'page',$request->page);
-//        else
-//            $data =$data->paginate($request->paginate);
-//
-//        return $data;
-//    }
 
 }

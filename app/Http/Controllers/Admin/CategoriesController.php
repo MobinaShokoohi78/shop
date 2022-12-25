@@ -18,7 +18,6 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-
         $categories = Category::select('id','name','parent')->where('parent', 0)->with('child')->get()->toArray();
         $categories = collect($categories)->chunk(10);
 

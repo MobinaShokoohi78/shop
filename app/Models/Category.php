@@ -21,4 +21,25 @@ class Category extends Model
     {
         return $this->belongsTo(product::class);
     }
+
+    public $categoriesList = [];
+    public function scopeCategoriesList($query){
+        $categories = Category::select('id','name','parent')->where('parent', 0)->get()->toArray();
+        return self::makeCategoriesList($categories);
+    }
+
+    function makeCategoriesList($categories,$data=[])
+    {
+        foreach ($categories as $category){
+            array_push($data,$category['name']);
+            if($childs = Category::select('id','name','parent')->where('parent', $category['id'])->get()->toArray()){
+                $this->makeCategoriesList($childs,$data);
+            }
+            array_push($this->categoriesList,['id' => $category['id'], 'text' => implode('، ',$data)]);
+            array_pop($data);
+        }
+
+        return $this->categoriesList;
+
+    }
 }

@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script src="https://kit.fontawesome.com/a62aebca0c.js" crossorigin="anonymous"></script>
+{{--        <script src="https://kit.fontawesome.com/a62aebca0c.js" crossorigin="anonymous"></script>--}}
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
 {{--        <link href="/your-path-to-fontawesome/css/fontawesome.css" rel="stylesheet">--}}
@@ -27,6 +27,9 @@
         @env ('local')
             <script src="http://localhost:8080/js/bundle.js"></script>
         @endenv
+{{--        <script src="../path/to/flowbite/dist/flowbite.js"></script>--}}
+        <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
+
     </body>
     <script src="{{asset('/js/app.js')}}"></script>
     <script src="https://unpkg.com/mitt/dist/mitt.umd.js"></script>

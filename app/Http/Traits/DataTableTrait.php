@@ -21,19 +21,15 @@ trait DataTableTrait{
             $data = $data->select($cols->all());
         }
 
-
         if (!empty($request->filters)){
             $filters = $request->filters;
             foreach($filters as $filter => $key){
-
                 if ($key != ''){
-                    if (DateTime::createFromFormat('Y-m-d', $key) !== false || DateTime::createFromFormat('Y-m-d H:i:s', $key) !== false){
+                    if (DateTime::createFromFormat('Y-m-d', (string)$key) !== false || DateTime::createFromFormat('Y-m-d H:i:s', (string)$key) !== false){
                         $data = $data->where($filter, 'like',"%$key%");
-
                     }
                     else{
                         $data = $data->where($filter, $key);
-
                     }
                 }
             }

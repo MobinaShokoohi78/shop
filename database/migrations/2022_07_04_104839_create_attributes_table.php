@@ -32,7 +32,7 @@ class CreateAttributesTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('attribute_product', function (Blueprint $table) {
+        Schema::create('attribute_products', function (Blueprint $table) {
 
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
@@ -45,6 +45,8 @@ class CreateAttributesTable extends Migration
 
             $table->primary(['product_id', 'attribute_id', 'value_id']);
 
+            $table->timestamps();
+
         });
     }
 
@@ -55,7 +57,7 @@ class CreateAttributesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('attribute_product');
+//        Schema::dropIfExists('attribute_product');
         Schema::dropIfExists('attribute_values');
         Schema::dropIfExists('attributes');
     }

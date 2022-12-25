@@ -9,6 +9,8 @@ import { InertiaProgress } from '@inertiajs/progress';
 import Salert from 'sweetalert2'
 import mitt from 'mitt'
 
+import CKEditor from '@ckeditor/ckeditor5-vue';
+
 const emitter = mitt();
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -18,6 +20,7 @@ createInertiaApp({
     setup({ el, app, props, plugin }) {
         return createApp({ render: () => h(app, props) })
             .use(plugin)
+            .use(CKEditor)
             .mixin({ methods: { route } })
             .component('Select2', Select2)
             .component('SweetAlert', Salert)
